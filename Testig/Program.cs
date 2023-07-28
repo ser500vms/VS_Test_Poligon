@@ -46,19 +46,50 @@ strictly increasing after removing exactly one element, or false
 otherwise. If the array is already strictly increasing, return true.
 */
 
-// 1. Напишем метод по определению, возрастающий массив или нет.
+// 4. Пишем программу.
 
-bool WhetherArrayGrowing(int[] arrey)
+bool Answer(int[] arrey)
 {
-    bool impressive = true;
+    bool answer = WhetherArrayGrowing(arrey);
+    if (answer == false)
+    {
+        int numberToDelete = FindNumberToDelete(arrey);
+        List<int> secondArrey = DeleteNumber(arrey, numberToDelete);
+        answer = WhetherDynamicArrayGrowing(secondArrey);
+    }
+    return answer;
+}
+
+// 3. Напишем метод по нахождению лишнего числа.
+
+int FindNumberToDelete(int[] arrey)
+{
+    int deleteNumber = 0;
+    bool endCicle = false;
     for (int i = 0; i < arrey.Length - 1; i++)
     {
-        if (arrey[i] >= arrey[i + 1])
+        if (i == arrey.Length - 2 || endCicle == true)
         {
-            impressive = false;   
+            if (i >= i + 1)
+            {
+                deleteNumber = i + 1;
+            }
+            break;
+        }
+        else
+        {
+            if (i >= i + 1)
+            {
+                if (i >= i + 2)
+                {
+                    deleteNumber = i;
+                    endCicle = true;    
+                }
+                else deleteNumber = i + 1;
+            }
         }
     }
-    return impressive;
+    return deleteNumber;
 }
 
 // 2. Напишем метод по копированию массива без выбранного элемента.
@@ -68,26 +99,49 @@ List<int> DeleteNumber(int[] arrey, int deleteNumber)
     List<int> copyArrey = new List<int>();
     for (int i = 0; i < arrey.Length; i++)
     {
-        int num = arrey[i];
-        if (deleteNumber != arrey[i])
+        i = arrey[i];
+        if (deleteNumber != i)
         {
-            copyArrey.Add(num);
+            copyArrey.Add(arrey[i]);
         }
     }
     return copyArrey;
 }
 
-// 3. Напишем метод по нахождению лишнего числа.
+// 1. Напишем метод по определению, возрастающий массив или нет.
+
+bool WhetherArrayGrowing(int[] arrey)
+{
+    bool impressive = true;
+    for (int i = 0; i < arrey.Length - 1; i++)
+    {
+        if (arrey[i] >= arrey[i + 1])
+        {
+            impressive = false;
+            break;
+        }
+    }
+    return impressive;
+}
+
+bool WhetherDynamicArrayGrowing(List<int> arrey)
+{
+    bool impressive = true;
+    int lenght = arrey.Count;
+    for (int i = 0; i < lenght - 1; i++)
+    {
+        if (arrey[i] >= arrey[i + 1])
+        {
+            impressive = false;
+            break;
+        }
+    }
+    return impressive;
+}
 
 
-int[] arrey = { 1, 2, 36, 3, 4, 5, 6 }; // тут лишняя 36 (условием нахождения 36 будет, что предыдущее значение >= следующего и надо удалить предыдущее значение)
-int[] arrey = { 1, 2, 36, 3, 37, 57, 67 }; // тут 3 (условием нахождения 3 будет, что предыдущее значение <= следующего и надо удалить следующее значение)
-int[] arrey = { 1, 2, 36, 36, 4, 5, 6 }; // тут не решаемо
-int[] arrey = { 1, 1, 2, 3, 4, 5, 6 }; // тут 1
-int[] arrey = { 1, 2, 3, 5, 5, 6, 4 }; // тут 4
 
 
+int[] arrey = { 1, 1, 1 }; // тут лишняя 36 (условием нахождения 36 будет, что предыдущее значение >= следующего и надо удалить предыдущее значение)
 
-List<int> copyArrey = DeleteNumber(arrey, 36);
-Console.Write($"[{String.Join(", ", arrey)}] -> ");
-Console.Write($"[{String.Join(", ", copyArrey)}]");
+Console.WriteLine(Answer(arrey));
